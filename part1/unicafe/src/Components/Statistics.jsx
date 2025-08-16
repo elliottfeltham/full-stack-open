@@ -24,12 +24,20 @@ const Statistics = ({ good, neutral, bad }) => {
 	}
 	return (
 		<>
-			<StatisticLine text={"good"} value={good} />
-			<StatisticLine text={"neutral"} value={neutral} />
-			<StatisticLine text={"bad"} value={bad} />
-			<StatisticLine text={"total"} value={total} />
-			<StatisticLine text={"average"} value={getAverage()} />
-			<StatisticLine text={"positive"} value={getPositivePercent()} />
+			<table>
+				<tbody>
+					<StatisticLine text={"good"} value={good} />
+					<StatisticLine text={"good"} value={good} />
+					<StatisticLine text={"neutral"} value={neutral} />
+					<StatisticLine text={"bad"} value={bad} />
+					<StatisticLine text={"total"} value={total} />
+					<StatisticLine text={"average"} value={getAverage()} />
+					<StatisticLine
+						text={"positive"}
+						value={getPositivePercent()}
+					/>
+				</tbody>
+			</table>
 		</>
 	);
 };

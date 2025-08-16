@@ -19,6 +19,21 @@ const App = () => {
 		return setBad(bad + 1);
 	};
 
+	const getAverage = () => {
+		const total = good + neutral + bad;
+		const average = (good * 1 + neutral * 0 + bad * -1) / total;
+		if (total === 0) {
+			return 0;
+		}
+
+		return average;
+	};
+
+	const getPositivePercent = () => {
+		const total = good + neutral + bad;
+		return good / total;
+	};
+
 	return (
 		<div>
 			<h2>give feedback</h2>
@@ -29,6 +44,9 @@ const App = () => {
 			<p>good: {good}</p>
 			<p>neutral: {neutral}</p>
 			<p>bad: {bad}</p>
+			<p>all: {good + neutral + bad}</p>
+			<p>average: {getAverage()}</p>
+			<p>positive: {getPositivePercent()}%</p>
 		</div>
 	);
 };

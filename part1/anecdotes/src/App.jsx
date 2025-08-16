@@ -17,7 +17,7 @@ const App = () => {
 	const [votes, setVotes] = useState(Array(8).fill(0));
 
 	const getQuote = () => {
-		const randomNumber = Math.floor(Math.random() * 8);
+		const randomNumber = Math.floor(Math.random() * anecdotes.length);
 		console.log(randomNumber);
 		setSelected(randomNumber);
 	};
@@ -28,7 +28,8 @@ const App = () => {
 		setVotes(newVotes);
 	};
 
-	console.log("selected: " + selected, "votes: " + votes);
+	const mostVotes = votes.indexOf(Math.max(...votes));
+
 	return (
 		<>
 			<h1>Anecdote of the day</h1>
@@ -36,6 +37,10 @@ const App = () => {
 			<p>has {votes[selected]} votes</p>
 			<Button label={"Vote"} onClick={handleVote} />
 			<Button label={"New Anecdote"} onClick={getQuote} />
+			<br />
+			<h1>Anecdote with the most votes</h1>
+			<div>{anecdotes[mostVotes]}</div>
+			<p>has {votes[mostVotes]} votes</p>
 		</>
 	);
 };

@@ -3,7 +3,7 @@ const Header = (props) => <h1>{props.course}</h1>;
 const Content = ({ parts }) => (
 	<div>
 		{parts.map((part) => (
-			<Part key={parts.id} part={part} />
+			<Part key={part.id} part={part} />
 		))}
 	</div>
 );
@@ -14,13 +14,21 @@ const Part = (props) => (
 	</p>
 );
 
-const Total = (props) => <p>Number of exercises {props.total}</p>;
+const Total = ({ parts }) => (
+	<p>
+		<strong>
+			Total of exercises{" "}
+			{parts.reduce((sum, part) => sum + part.exercises, 0)}
+		</strong>
+	</p>
+);
 
 const Course = ({ course }) => {
 	return (
 		<div>
 			<Header course={course.name} />
 			<Content parts={course.parts} />
+			<Total parts={course.parts} />
 		</div>
 	);
 };
@@ -47,7 +55,7 @@ const App = () => {
 			},
 			{
 				name: "Redux",
-				exercises: 10,
+				exercises: 11,
 				id: 4,
 			},
 		],

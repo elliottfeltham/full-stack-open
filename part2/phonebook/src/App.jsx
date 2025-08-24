@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons";
 
 const App = () => {
 	const [persons, setPersons] = useState([
@@ -38,44 +41,27 @@ const App = () => {
 				]);
 			}
 		});
+		setNewName("");
+		setNewNumber("");
 	};
 
-	const numbersToShow = persons.filter((person) =>
+	const personsToShow = persons.filter((person) =>
 		person.name.toLowerCase().includes(newFilter.toLowerCase())
 	);
 
-	console.table(persons);
 	return (
 		<div>
 			<h2>Phonebook</h2>
-			<p>
-				filter shown with:{" "}
-				<input value={newFilter} onChange={handleFilterChange} />
-			</p>
-			<form>
-				<div>
-					name: <input value={newName} onChange={handleNameChange} />
-				</div>
-				<div>
-					number:{" "}
-					<input value={newNumber} onChange={handleNumberChange} />
-				</div>
-				<div>
-					<button type="submit" onClick={addPerson}>
-						add
-					</button>
-				</div>
-			</form>
+			<Filter value={newFilter} onChange={handleFilterChange} />
+			<PersonForm
+				name={newName}
+				nameChange={handleNameChange}
+				number={newNumber}
+				numberChange={handleNumberChange}
+				onClick={addPerson}
+			/>
 			<h2>Numbers</h2>
-			<ul>
-				{numbersToShow.map((person) => {
-					return (
-						<li
-							key={person.name}
-						>{`${person.name}: ${person.number}`}</li>
-					);
-				})}
-			</ul>
+			<Persons personsList={personsToShow} />
 		</div>
 	);
 };

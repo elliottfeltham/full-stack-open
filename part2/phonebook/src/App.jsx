@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from "axios";
+import phonebookService from "./services/phonebook";
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
@@ -11,7 +11,7 @@ const App = () => {
 	const [newFilter, setNewFilter] = useState("");
 
 	useEffect(() => {
-		axios.get("http://localhost:3001/persons").then((response) => {
+		phonebookService.getAll().then((response) => {
 			setPersons(response.data);
 		});
 	}, []);
@@ -42,20 +42,17 @@ const App = () => {
 				(person) => person.name.toLowerCase() === name.toLowerCase()
 			)
 		) {
-			console.log("Name already exists");
+			alert("Name already exists");
 			return;
 		}
 
 		// Add person to the backend and use the response to update the UI
-		axios
-			.post("http://localhost:3001/persons", newPerson)
-			.then((response) => {
-				console.log(response);
-				const savedPerson = response.data;
-				setPersons([...persons, savedPerson]);
-				setNewName("");
-				setNewNumber("");
-			});
+		phonebookService.create(newPerson).then((response) => {
+			const savedPerson = response.data;
+			setPersons([...persons, savedPerson]);
+			setNewName("");
+			setNewNumber("");
+		});
 	};
 
 	const personsToShow = persons.filter((person) =>

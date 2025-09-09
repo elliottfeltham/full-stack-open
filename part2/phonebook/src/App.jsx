@@ -31,6 +31,10 @@ const App = () => {
 		const name = newName;
 		const number = newNumber;
 
+		if (!name || !number) {
+			return;
+		}
+
 		const newPerson = {
 			name,
 			number,
@@ -59,6 +63,17 @@ const App = () => {
 		person.name.toLowerCase().includes(newFilter.toLowerCase())
 	);
 
+	const deleteContact = (contact) => {
+		const ok = window.confirm(`Delete ${contact.name}?`);
+		if (!ok) return;
+
+		phonebookService
+			.deleteContact(contact.id)
+			.then(
+				setPersons(persons.filter((person) => person.id !== contact.id))
+			);
+	};
+
 	return (
 		<div>
 			<h2>Phonebook</h2>
@@ -71,7 +86,10 @@ const App = () => {
 				onClick={addPerson}
 			/>
 			<h2>Numbers</h2>
-			<Persons personsList={personsToShow} />
+			<Persons
+				personsList={personsToShow}
+				deleteContact={deleteContact}
+			/>
 		</div>
 	);
 };

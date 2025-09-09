@@ -1,6 +1,6 @@
 import Person from "./Person";
 
-const Persons = ({ personsList }) => {
+const Persons = ({ personsList, deleteContact }) => {
 	return (
 		<ul>
 			{personsList.map((person) => (
@@ -8,6 +8,7 @@ const Persons = ({ personsList }) => {
 					key={person.name}
 					name={person.name}
 					number={person.number}
+					handleClick={() => deleteContact(person)}
 				/>
 			))}
 		</ul>

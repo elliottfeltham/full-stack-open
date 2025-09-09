@@ -6,12 +6,12 @@ const getAll = () => {
 	return axios.get(baseUrl);
 };
 
-const create = (newContact) => {
-	return axios.post(baseUrl, newContact);
+const create = (contact) => {
+	return axios.post(baseUrl, contact);
 };
 
-const update = (id, newContact) => {
-	return axios.put(`${baseUrl}/${id}`, newContact);
+const update = (id, contact) => {
+	return axios.put(`${baseUrl}/${id}`, contact);
 };
 
 const deleteContact = (id) => {

@@ -28,8 +28,8 @@ const App = () => {
 
 	const addPerson = (event) => {
 		event.preventDefault();
-		const name = newName;
-		const number = newNumber;
+		const name = newName.trim();
+		const number = newNumber.trim();
 
 		if (!name || !number) {
 			return;
@@ -40,23 +40,57 @@ const App = () => {
 			number,
 		};
 
+		const exists = persons.some(
+			(person) => person.name.toLowerCase() === name.toLowerCase()
+		);
+
 		// Check if person already exists
-		if (
-			persons.some(
-				(person) => person.name.toLowerCase() === name.toLowerCase()
-			)
-		) {
-			alert("Name already exists");
+		if (exists) {
+			const ok = window.confirm(
+				`${name} is already in the phonebook, would you like to update their number with the new one?`
+			);
+			if (!ok) return;
+
+			// Find the correct person and update their number
+			const selectedPerson = persons.find(
+				(person) => person.name === name
+			);
+			const updatedContact = { ...selectedPerson, number };
+
+			// Edit the number of the selected person in the backend
+			phonebookService
+				.update(selectedPerson.id, updatedContact)
+				.then((response) => {
+					setPersons(
+						persons.map((person) =>
+							person.id === selectedPerson.id
+								? response.data
+								: person
+						)
+					);
+					setNewName("");
+					setNewNumber("");
+				})
+				.catch((error) => {
+					console.error("Failed to update contact", error);
+					alert("Failed to update contact");
+				});
 			return;
 		}
 
 		// Add person to the backend and use the response to update the UI
-		phonebookService.create(newPerson).then((response) => {
-			const savedPerson = response.data;
-			setPersons([...persons, savedPerson]);
-			setNewName("");
-			setNewNumber("");
-		});
+		phonebookService
+			.create(newPerson)
+			.then((response) => {
+				const savedPerson = response.data;
+				setPersons([...persons, savedPerson]);
+				setNewName("");
+				setNewNumber("");
+			})
+			.catch((error) => {
+				console.error("Failed to add contact", error);
+				alert("Failed to add contact");
+			});
 	};
 
 	const personsToShow = persons.filter((person) =>
@@ -69,9 +103,13 @@ const App = () => {
 
 		phonebookService
 			.deleteContact(contact.id)
-			.then(
+			.then(() =>
 				setPersons(persons.filter((person) => person.id !== contact.id))
-			);
+			)
+			.catch((error) => {
+				console.error("Failed to delete contact", error);
+				alert("Failed to delete contact");
+			});
 	};
 
 	return (

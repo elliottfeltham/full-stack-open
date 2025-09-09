@@ -3,12 +3,14 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import phonebookService from "./services/phonebook";
+import Notification from "./components/Notification";
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState("");
 	const [newNumber, setNewNumber] = useState("");
 	const [newFilter, setNewFilter] = useState("");
+	const [notification, setNotification] = useState(null);
 
 	useEffect(() => {
 		phonebookService.getAll().then((response) => {
@@ -86,6 +88,10 @@ const App = () => {
 				setPersons([...persons, savedPerson]);
 				setNewName("");
 				setNewNumber("");
+				setNotification(`${name} successfully added to phonebook`);
+				setTimeout(() => {
+					setNotification(null);
+				}, 5000);
 			})
 			.catch((error) => {
 				console.error("Failed to add contact", error);
@@ -115,6 +121,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			<Notification message={notification} />
 			<Filter value={newFilter} onChange={handleFilterChange} />
 			<PersonForm
 				name={newName}

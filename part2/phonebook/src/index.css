@@ -7,3 +7,13 @@
 	padding: 10px;
 	border-radius: 5px;
 }
+
+.error {
+	font-size: 32px;
+	font-style: italic;
+	border: 3px solid red;
+	background-color: lightgrey;
+	color: red;
+	padding: 10px;
+	border-radius: 5px;
+}

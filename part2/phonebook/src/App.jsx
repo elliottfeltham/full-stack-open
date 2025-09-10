@@ -4,6 +4,7 @@ import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import phonebookService from "./services/phonebook";
 import Notification from "./components/Notification";
+import Error from "./components/Error";
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
@@ -11,6 +12,7 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState("");
 	const [newFilter, setNewFilter] = useState("");
 	const [notification, setNotification] = useState(null);
+	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		phonebookService.getAll().then((response) => {
@@ -75,7 +77,10 @@ const App = () => {
 				})
 				.catch((error) => {
 					console.error("Failed to update contact", error);
-					alert("Failed to update contact");
+					setError(`${name} has already been removed`);
+					setTimeout(() => {
+						setError(null);
+					}, 5000);
 				});
 			return;
 		}
@@ -122,6 +127,7 @@ const App = () => {
 		<div>
 			<h2>Phonebook</h2>
 			<Notification message={notification} />
+			<Error message={error} />
 			<Filter value={newFilter} onChange={handleFilterChange} />
 			<PersonForm
 				name={newName}

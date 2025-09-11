@@ -1,6 +1,6 @@
 import CountryInfo from "./CountryInfo";
 
-const Countries = ({ countries, country }) => {
+const Countries = ({ countries, country, handleClick }) => {
 	if (countries.length === 0) {
 		return null;
 	}
@@ -9,11 +9,21 @@ const Countries = ({ countries, country }) => {
 		if (!country) {
 			return null;
 		}
+	}
+
+	if (country) {
 		return <CountryInfo country={country} />;
 	}
 
 	const filteredCountries = countries.map((country) => {
-		return <li key={country.name.common}>{country.name.common}</li>;
+		return (
+			<li key={country.name.common}>
+				{country.name.common}
+				<button onClick={() => handleClick(country.name.common)}>
+					Show
+				</button>
+			</li>
+		);
 	});
 
 	return <ul>{filteredCountries}</ul>;

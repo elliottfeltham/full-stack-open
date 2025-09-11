@@ -40,6 +40,12 @@ const App = () => {
 		}
 	}, [selectedCountry]);
 
+	const showCountryInfo = (name) => {
+		countriesService.getCountry(name).then((response) => {
+			setCountry(response.data);
+		});
+	};
+
 	return (
 		<div className="container">
 			<h1>Countries</h1>
@@ -49,7 +55,11 @@ const App = () => {
 				handleChange={handleSearchChange}
 			/>
 			{countriesList.length < 10 ? (
-				<Countries countries={countriesList} country={country} />
+				<Countries
+					countries={countriesList}
+					country={country}
+					handleClick={showCountryInfo}
+				/>
 			) : (
 				newSearch && (
 					<p>Too many matches, please specify another filter</p>

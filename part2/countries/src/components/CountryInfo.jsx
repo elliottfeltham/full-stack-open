@@ -1,4 +1,4 @@
-const CountryInfo = ({ country }) => {
+const CountryInfo = ({ country, weather }) => {
 	const languages = Object.entries(country.languages);
 
 	return (
@@ -17,6 +17,18 @@ const CountryInfo = ({ country }) => {
 				src={country.flags.png}
 				alt="Picture of flag"
 			/>
+			{weather && (
+				<section>
+					<h3>Weather in {country.capital}</h3>
+					<p>Temperature: {weather.main.temp} Celsius</p>
+					<img
+						className="weather-logo"
+						src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+						alt="Weather icon"
+					/>
+					<p>Wind: {weather.wind.speed} m/s</p>
+				</section>
+			)}
 		</div>
 	);
 };

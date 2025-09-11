@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import Search from "./components/Search";
 import Countries from "./components/Countries";
 import countriesService from "./services/countries";
+import weatherService from "./services/weather";
 
 const App = () => {
 	const [newSearch, setNewSearch] = useState("");
 	const [countries, setCountries] = useState([]);
 	const [country, setCountry] = useState(null);
+	const [weather, setWeather] = useState(null);
 
 	// Fetch list of countries
 	useEffect(() => {
@@ -15,8 +17,24 @@ const App = () => {
 		});
 	}, []);
 
+	// Fetch weather info for displayed country
+	useEffect(() => {
+		const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+
+		if (!country) {
+			return;
+		}
+
+		weatherService
+			.getWeather(country.capital, OPENWEATHER_API_KEY)
+			.then((response) => {
+				setWeather(response.data);
+			});
+	}, [country]);
+
 	const handleSearchChange = (event) => {
 		setNewSearch(event.target.value);
+		setCountry(null); // Reset country everytime to avoid cached country bug while searching
 	};
 
 	// Filter through countries dynamically
@@ -58,6 +76,7 @@ const App = () => {
 				<Countries
 					countries={countriesList}
 					country={country}
+					weather={weather}
 					handleClick={showCountryInfo}
 				/>
 			) : (

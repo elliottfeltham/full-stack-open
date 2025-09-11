@@ -1,6 +1,6 @@
 import CountryInfo from "./CountryInfo";
 
-const Countries = ({ countries, country, handleClick }) => {
+const Countries = ({ countries, country, weather, handleClick }) => {
 	if (countries.length === 0) {
 		return null;
 	}
@@ -12,7 +12,7 @@ const Countries = ({ countries, country, handleClick }) => {
 	}
 
 	if (country) {
-		return <CountryInfo country={country} />;
+		return <CountryInfo country={country} weather={weather} />;
 	}
 
 	const filteredCountries = countries.map((country) => {

@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 3001;
 
-const persons = [
+let persons = [
 	{
 		id: "1",
 		name: "Arto Hellas",
@@ -29,6 +29,10 @@ app.get("/", (request, response) => {
 	response.send(`Go to "/api/persons" or "/info"`);
 });
 
+app.get("/api/persons", (request, response) => {
+	response.json(persons);
+});
+
 app.get("/api/persons/:id", (request, response) => {
 	const id = request.params.id;
 	const person = persons.find((p) => p.id === id);
@@ -40,8 +44,11 @@ app.get("/api/persons/:id", (request, response) => {
 	}
 });
 
-app.get("/api/persons", (request, response) => {
-	response.json(persons);
+app.delete("/api/persons/:id", (req, res) => {
+	const id = req.params.id;
+	persons = persons.filter((p) => p.id === id);
+
+	res.status(204).end();
 });
 
 app.get("/info", (request, response) => {

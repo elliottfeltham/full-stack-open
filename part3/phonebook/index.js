@@ -4,6 +4,20 @@ const PORT = 3001;
 
 app.use(express.json());
 
+// Logging middleware using "morgan"
+const morgan = require("morgan");
+
+morgan.token("person", (req, res) => {
+	return JSON.stringify(req.body);
+});
+
+app.use(
+	morgan(
+		":method :url :status :res[content-length] - :response-time ms :person"
+	)
+);
+
+// Phonebook data
 let persons = [
 	{
 		id: "1",
@@ -27,6 +41,7 @@ let persons = [
 	},
 ];
 
+// Routes
 app.get("/", (request, response) => {
 	response.send(`Go to "/api/persons" or "/info"`);
 });
@@ -47,12 +62,28 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 app.post("/api/persons", (req, res) => {
+	const body = req.body;
 	const id = Math.floor(Math.random() * 1000);
 
-	const person = req.body;
-	person.id = String(id);
+	if (!body.name) {
+		return res.status(400).json({ error: "name is missing" });
+	}
 
-	persons = persons.concat(person);
+	if (!body.number) {
+		return res.status(400).json({ error: "number is missing" });
+	}
+
+	if (persons.some((p) => p.name === body.name)) {
+		return res.status(400).json({ error: "name already exists" });
+	}
+
+	const person = {
+		id: String(id),
+		name: body.name,
+		number: body.number,
+	};
+
+	persons = [...persons, person];
 	res.json(person);
 });
 
@@ -70,6 +101,13 @@ app.get("/info", (request, response) => {
 		${date.toString()}`
 	);
 });
+
+// Middleware function which runs if the route doesn't exist
+const unknownEndpoint = (req, res) => {
+	res.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
 
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);

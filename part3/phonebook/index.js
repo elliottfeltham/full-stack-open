@@ -113,7 +113,8 @@ const unknownEndpoint = (req, res) => {
 
 app.use(unknownEndpoint);
 
+// Sets port to either Render's PORT or localhost:3001
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
-	// console.log(`Server running on port http://localhost:${port}`);
+	console.log(`Server running on port http://localhost:${port}`);
 });

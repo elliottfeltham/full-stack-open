@@ -1,8 +1,11 @@
 const express = require("express");
+const cors = require("cors");
+
 const app = express();
 const PORT = 3001;
 
 app.use(express.json());
+app.use(cors());
 
 // Logging middleware using "morgan"
 const morgan = require("morgan");
@@ -84,7 +87,9 @@ app.post("/api/persons", (req, res) => {
 	};
 
 	persons = [...persons, person];
+
 	res.json(person);
+	console.log(body);
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -110,5 +115,5 @@ const unknownEndpoint = (req, res) => {
 app.use(unknownEndpoint);
 
 app.listen(PORT, () => {
-	console.log(`Server running on port ${PORT}`);
+	console.log(`Server running on port http://localhost:${PORT}`);
 });

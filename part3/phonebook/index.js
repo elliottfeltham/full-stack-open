@@ -112,12 +112,17 @@ app.delete("/api/persons/:id", (req, res, next) => {
 		});
 });
 
-app.get("/info", (request, response) => {
+app.get("/info", (request, response, next) => {
 	const date = new Date();
-	response.send(
-		`Phonebook has info for ${persons.length} people <br>
-		${date.toString()}`
-	);
+
+	Contact.estimatedDocumentCount()
+		.then((count) => {
+			response.send(
+				`Phonebook has info for ${count} people <br>
+					${date.toString()}`
+			);
+		})
+		.catch((error) => next(error));
 });
 
 // Middleware function which runs if the route doesn't exist

@@ -1,4 +1,6 @@
+require("dotenv").config();
 const express = require("express");
+const Contact = require("./models/contacts");
 
 const app = express();
 
@@ -48,23 +50,19 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-	response.json(persons);
+	Contact.find({}).then((person) => {
+		response.json(person);
+	});
 });
 
 app.get("/api/persons/:id", (request, response) => {
-	const id = request.params.id;
-	const person = persons.find((p) => p.id === id);
-
-	if (person) {
+	Contact.findById(request.params.id).then((person) => {
 		response.json(person);
-	} else {
-		response.status(404).end();
-	}
+	});
 });
 
 app.post("/api/persons", (req, res) => {
 	const body = req.body;
-	const id = Math.floor(Math.random() * 1000);
 
 	if (!body.name) {
 		return res.status(400).json({ error: "name is missing" });
@@ -74,20 +72,14 @@ app.post("/api/persons", (req, res) => {
 		return res.status(400).json({ error: "number is missing" });
 	}
 
-	if (persons.some((p) => p.name === body.name)) {
-		return res.status(400).json({ error: "name already exists" });
-	}
-
-	const person = {
-		id: String(id),
+	const contact = new Contact({
 		name: body.name,
 		number: body.number,
-	};
+	});
 
-	persons = [...persons, person];
-
-	res.json(person);
-	console.log(body);
+	contact.save().then((newContact) => {
+		res.json(newContact);
+	});
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -113,7 +105,7 @@ const unknownEndpoint = (req, res) => {
 app.use(unknownEndpoint);
 
 // Sets port to either Render's PORT or localhost:3001
-const port = process.env.PORT || 3001;
-app.listen(port, () => {
-	console.log(`Server running on port http://localhost:${port}`);
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+	console.log(`Server running on port http://localhost:${PORT}`);
 });

@@ -31,7 +31,7 @@ const contact = new Contact({
 if (process.argv.length === 3) {
 	console.log("phonebook:");
 	Contact.find({}).then((result) => {
-		result.map((person) => {
+		result.forEach((person) => {
 			console.log(`${person.name} ${person.number}`);
 		});
 		mongoose.connection.close();

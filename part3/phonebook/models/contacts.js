@@ -5,14 +5,14 @@ mongoose.set("strictQuery", false);
 const url = process.env.MONGODB_URI;
 
 // Connect to the database
-console.log("connecting to", url);
+console.log("Connecting to database");
 mongoose
 	.connect(url)
 	.then((result) => {
-		console.log("connected to MongoDB");
+		console.log("Connected to MongoDB");
 	})
 	.catch((error) => {
-		console.log("error connecting to MongoDB:", error.message);
+		console.log("Error connecting to MongoDB:", error.message);
 	});
 
 // Set the database schema

@@ -20,29 +20,17 @@ app.use(
 	)
 );
 
-// Phonebook data
-let persons = [
-	{
-		id: "1",
-		name: "Arto Hellas",
-		number: "040-123456",
-	},
-	{
-		id: "2",
-		name: "Ada Lovelace",
-		number: "39-44-5323523",
-	},
-	{
-		id: "3",
-		name: "Dan Abramov",
-		number: "12-43-234345",
-	},
-	{
-		id: "4",
-		name: "Mary Poppendieck",
-		number: "39-23-6423122",
-	},
-];
+// Error handling
+const errorHandler = (error, request, response, next) => {
+	console.error(error.message);
+
+	// Failed promise due to MongoDB ObjectID requiring 24 digit hex
+	if (error.name === "CastError") {
+		return response.status(400).send({ error: "malformatted id" });
+	}
+
+	next(error);
+};
 
 // Routes
 app.get("/", (request, response) => {
@@ -55,10 +43,19 @@ app.get("/api/persons", (request, response) => {
 	});
 });
 
-app.get("/api/persons/:id", (request, response) => {
-	Contact.findById(request.params.id).then((person) => {
-		response.json(person);
-	});
+app.get("/api/persons/:id", (request, response, next) => {
+	Contact.findById(request.params.id)
+		.then((person) => {
+			if (person) {
+				response.json(person);
+			} else {
+				// Successful promise returned but no ID found
+				response.status(404).end();
+			}
+		})
+		.catch((error) => {
+			next(error);
+		});
 });
 
 app.post("/api/persons", (req, res) => {
@@ -82,11 +79,37 @@ app.post("/api/persons", (req, res) => {
 	});
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-	const id = req.params.id;
-	persons = persons.filter((p) => p.id !== id);
+app.put("/api/persons/:id", (req, res, next) => {
+	console.log("Content-Type:", req.headers["content-type"]);
+	console.log("Body:", req.body);
+	const body = req.body;
 
-	res.status(204).end();
+	Contact.findById(req.params.id)
+		.then((person) => {
+			if (!person) {
+				return res.status(404).end();
+			}
+
+			person.name = body.name;
+			person.number = body.number;
+
+			return person.save().then((updatedContact) => {
+				res.json(updatedContact);
+			});
+		})
+		.catch((error) => {
+			next(error);
+		});
+});
+
+app.delete("/api/persons/:id", (req, res, next) => {
+	Contact.findByIdAndDelete(req.params.id)
+		.then((result) => {
+			res.status(204).end();
+		})
+		.catch((error) => {
+			next(error);
+		});
 });
 
 app.get("/info", (request, response) => {
@@ -103,6 +126,8 @@ const unknownEndpoint = (req, res) => {
 };
 
 app.use(unknownEndpoint);
+
+app.use(errorHandler);
 
 // Sets port to either Render's PORT or localhost:3001
 const PORT = process.env.PORT;

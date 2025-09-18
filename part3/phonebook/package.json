@@ -7,7 +7,8 @@
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf dist && cd ../../part2/phonebook && npm run build && cp -r dist ../../part3/phonebook",
-    "deploy": "npm run build && git add . && git commit -m uibuild && git push"
+    "deploy": "npm run build && git add . && git commit -m uibuild && git push",
+    "lint": "eslint . --fix"
   },
   "author": "Elliott Feltham",
   "license": "ISC",
@@ -18,5 +19,11 @@
     "mongodb": "^6.19.0",
     "mongoose": "^8.18.1",
     "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@stylistic/eslint-plugin-js": "^4.4.1",
+    "eslint": "^9.35.0",
+    "globals": "^16.4.0"
   }
 }

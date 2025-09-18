@@ -24,7 +24,6 @@ app.use(
 const errorHandler = (error, request, response, next) => {
 	console.error(error.message);
 
-	// Failed promise due to MongoDB ObjectID requiring 24 digit hex
 	if (error.name === "CastError") {
 		return response.status(400).send({ error: "malformatted id" });
 	} else if (error.name === "ValidationError") {

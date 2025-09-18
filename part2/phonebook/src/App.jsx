@@ -99,8 +99,10 @@ const App = () => {
 				}, 5000);
 			})
 			.catch((error) => {
-				console.error("Failed to add contact", error);
-				alert("Failed to add contact");
+				setNotification(error.response.data.error);
+				setTimeout(() => {
+					setNotification(null);
+				}, 5000);
 			});
 	};
 

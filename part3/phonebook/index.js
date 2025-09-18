@@ -27,6 +27,8 @@ const errorHandler = (error, request, response, next) => {
 	// Failed promise due to MongoDB ObjectID requiring 24 digit hex
 	if (error.name === "CastError") {
 		return response.status(400).send({ error: "malformatted id" });
+	} else if (error.name === "ValidationError") {
+		return response.status(400).json({ error: error.message });
 	}
 
 	next(error);
@@ -58,7 +60,7 @@ app.get("/api/persons/:id", (request, response, next) => {
 		});
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
 	const body = req.body;
 
 	if (!body.name) {
@@ -74,9 +76,12 @@ app.post("/api/persons", (req, res) => {
 		number: body.number,
 	});
 
-	contact.save().then((newContact) => {
-		res.json(newContact);
-	});
+	contact
+		.save()
+		.then((newContact) => {
+			res.json(newContact);
+		})
+		.catch((error) => next(error));
 });
 
 app.put("/api/persons/:id", (req, res, next) => {

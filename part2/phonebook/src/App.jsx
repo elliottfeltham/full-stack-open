@@ -76,8 +76,7 @@ const App = () => {
 					setNewNumber("");
 				})
 				.catch((error) => {
-					console.error("Failed to update contact", error);
-					setError(`${name} has already been removed`);
+					setError(error.response.data.error);
 					setTimeout(() => {
 						setError(null);
 					}, 5000);
@@ -99,9 +98,9 @@ const App = () => {
 				}, 5000);
 			})
 			.catch((error) => {
-				setNotification(error.response.data.error);
+				setError(error.response.data.error);
 				setTimeout(() => {
-					setNotification(null);
+					setError(null);
 				}, 5000);
 			});
 	};

@@ -76,6 +76,15 @@ test("all blogs are returned", async () => {
 	assert.strictEqual(response.body.length, initialBlogs.length);
 });
 
+test("unique identifier is named id", async () => {
+	const response = await api.get("/api/blogs");
+
+	const blogs = response.body.map((blog) => Object.keys(blog)).flat();
+	console.log(blogs);
+	assert(blogs.includes("id"));
+	assert(!blogs.includes("_id"));
+});
+
 after(async () => {
 	await mongoose.connection.close();
 });

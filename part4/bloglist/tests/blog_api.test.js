@@ -77,12 +77,36 @@ test("all blogs are returned", async () => {
 });
 
 test("unique identifier is named id", async () => {
+	const blogs = await api.get("/api/blogs");
+
+	const keys = blogs.body.map((blog) => Object.keys(blog)).flat();
+	assert(keys.includes("id"));
+	assert(!keys.includes("_id"));
+});
+
+test("successfully creates a new blog post", async () => {
+	const newBlog = {
+		title: "Test Blog",
+		author: "Dave",
+		url: "testblog.com",
+		likes: "123",
+	};
+	await api
+		.post("/api/blogs")
+		.send(newBlog)
+		.expect(201)
+		.expect("Content-Type", /application\/json/);
+
 	const response = await api.get("/api/blogs");
 
-	const blogs = response.body.map((blog) => Object.keys(blog)).flat();
-	console.log(blogs);
-	assert(blogs.includes("id"));
-	assert(!blogs.includes("_id"));
+	const titles = response.body.map((r) => r.title);
+	console.log(titles);
+
+	// Test length is increased by 1
+	assert.strictEqual(response.body.length, initialBlogs.length + 1);
+
+	// Test title mathces new blog
+	assert(titles.includes("Test Blog"));
 });
 
 after(async () => {
